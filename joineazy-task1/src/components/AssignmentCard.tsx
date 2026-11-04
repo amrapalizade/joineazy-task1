@@ -9,6 +9,12 @@ interface AssignmentCardProps {
 
 function AssignmentCard({ assignment, status }: AssignmentCardProps) {
     const isSubmitted = status === "submitted";
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const dueDate = new Date(`${assignment.dueDate}T00:00:00`);
+    const isOverdue = !isSubmitted && dueDate < today;
+
 
     return (
         <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition hover:shadow-md">
@@ -30,9 +36,11 @@ function AssignmentCard({ assignment, status }: AssignmentCardProps) {
 
                 <span
                     className={`flex w-fit items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold ${isSubmitted
-                            ? "bg-green-100 text-green-700"
+                        ? "bg-green-100 text-green-700"
+                        : isOverdue
+                            ? "bg-red-100 text-red-700"
                             : "bg-yellow-100 text-yellow-700"
-                        }`}
+                     }`}
                 >
                     {isSubmitted ? (
                         <CheckCircle2 size={14} />
@@ -40,7 +48,7 @@ function AssignmentCard({ assignment, status }: AssignmentCardProps) {
                         <Clock size={14} />
                     )}
 
-                    {isSubmitted ? "Submitted" : "Pending"}
+                    {isSubmitted ? "Submitted" : isOverdue ? "Overdue" : "Pending"}
                 </span>
             </div>
 

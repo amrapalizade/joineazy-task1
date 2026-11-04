@@ -64,6 +64,12 @@ function AdminDashboard() {
             ).length;
 
             const total = assignment.assignedStudentIds.length;
+            //const today = new Date();
+            //today.setHours(0, 0, 0, 0);
+
+            //const dueDate = new Date(`${assignment.dueDate}T00:00:00`);
+
+            //const isOverdue = submitted < total && dueDate < today;
 
             if (statusFilter === "pending") {
                 return submitted < total;
@@ -294,6 +300,12 @@ function AdminDashboard() {
                                     ).length;
 
                                     const total = assignment.assignedStudentIds.length;
+                                    const today = new Date();
+                                    today.setHours(0, 0, 0, 0);
+
+                                    const dueDate = new Date(`${assignment.dueDate}T00:00:00`);
+
+                                    const isOverdue = submitted < total && dueDate < today;
                                     const progress = total > 0
                                         ? Math.round((submitted / total) * 100)
                                         : 0;
@@ -314,6 +326,11 @@ function AdminDashboard() {
                                                     <p className="mt-2 text-xs text-gray-500">
                                                         Due date: {assignment.dueDate}
                                                     </p>
+                                                    {isOverdue && (
+                                                        <span className="mt-2 inline-block rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
+                                                            Overdue
+                                                        </span>
+                                                    )}
                                                 </div>
 
                                                 <div className="flex items-center gap-3">
@@ -395,12 +412,16 @@ function AdminDashboard() {
                                                                 <span
                                                                     className={`text-xs font-semibold ${submission?.status === "submitted"
                                                                             ? "text-green-600"
-                                                                            : "text-orange-600"
+                                                                            : isOverdue
+                                                                                ? "text-red-600"
+                                                                                : "text-orange-600"
                                                                         }`}
                                                                 >
                                                                     {submission?.status === "submitted"
                                                                         ? "Submitted"
-                                                                        : "Pending"}
+                                                                        : isOverdue
+                                                                            ? "Overdue"
+                                                                            : "Pending"}
                                                                 </span>
                                                             </div>
                                                         );
