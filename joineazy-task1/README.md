@@ -1,75 +1,64 @@
-# React + TypeScript + Vite
+# Joineazy Assignment & Review Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A responsive assignment management dashboard built using React, TypeScript and Tailwind CSS. It supports Admin and Student roles.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+### Admin
+- Create, edit and delete assignments.
+- Assign tasks to all or selected students.
+- Track student submissions.
+- View assignment progress.
+- Search, filter and sort assignments.
+- Highlight overdue assignments.
+- View students and their submission status.
 
-## React Compiler
+### Student
+- View assigned assignments.
+- Open Google Drive links.
+- Submit assignments with confirmation.
+- Track pending and submitted status.
+- View overall progress.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tech Stack
 
-## Expanding the ESLint configuration
+- React.js
+- TypeScript
+- Tailwind CSS
+- Lucide React
+- Context API
+- LocalStorage
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Getting Started
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+1. Clone the repository:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+   ```bash
+   git clone https://github.com/amrapalizade/joineazy-task1.git
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+2. Open the project folder:
+    cd Joineazy-Task1
 
-```
+3.Install dependencies:
+    npm install
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+4. Start the development server:
+     npm run dev
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+5. Data Storage - The application uses browser LocalStorage to persist users, assignments and login state. No backend is required.
+6. Project Structure
+   src/
+  components/
+  context/
+  data/
+  hooks/
+  pages/
+  types/
+  App.tsx
+  index.css
+  main.tsx
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+7. Login
+The application includes mock Admin and Student accounts for testing. Select a user from the login screen to access the dashboard.
 
-```
+Author : Amrapali Zade
