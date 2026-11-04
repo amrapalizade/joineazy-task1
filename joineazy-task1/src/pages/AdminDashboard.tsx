@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { ClipboardList, Users, CheckCircle2, Clock } from "lucide-react";
+import { ClipboardList, Users, CheckCircle2, Clock, Plus, X } from "lucide-react";
 
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
@@ -8,9 +8,15 @@ import StatCard from "../components/StatCard";
 import SearchBar from "../components/SearchBar";
 import { useAppContext } from "../context/AppContext";
 
-function AdminDashboard() {
-    const { currentUser, users, assignments } = useAppContext();
 
+import AssignmentForm from "../components/AssignmentForm";
+import type { Assignment } from "../types";
+
+
+
+function AdminDashboard() {
+    const { currentUser, users, assignments, addAssignment } = useAppContext();
+    const [showForm, setShowForm] = useState(false);
     const [search, setSearch] = useState("");
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [activePage, setActivePage] = useState("dashboard");
@@ -46,6 +52,27 @@ function AdminDashboard() {
 
     if (!currentUser) return null;
 
+    const handleCreateAssignment = (data: {
+        title: string;
+        description: string;
+        dueDate: string;
+        driveLink: string;
+        assignedStudentIds: string[];
+    }) => {
+        const newAssignment: Assignment = {
+            id: crypto.randomUUID(),
+            ...data,
+            createdBy: currentUser.id,
+            submissions: data.assignedStudentIds.map((studentId) => ({
+                studentId,
+                status: "pending",
+            })),
+        };
+
+        addAssignment(newAssignment);
+        setShowForm(false);
+    };
+
     return (
         <div className="flex min-h-screen bg-gray-50">
             <Sidebar
@@ -70,6 +97,14 @@ function AdminDashboard() {
                             Manage assignments and track student submissions.
                         </p>
                     </div>
+
+                    {showForm && (
+                        <AssignmentForm
+                            students={users.filter((user) => user.role === "student")}
+                            onSubmit={handleCreateAssignment}
+                            onCancel={() => setShowForm(false)}
+                        />
+                    )}
 
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
                         <StatCard
@@ -110,13 +145,24 @@ function AdminDashboard() {
                     </div>
 
                     <section className="rounded-xl border border-gray-200 bg-white p-5">
-                        <div className="mb-5">
-                            <h2 className="text-lg font-semibold text-gray-900">
-                                My Assignments
-                            </h2>
-                            <p className="mt-1 text-sm text-gray-500">
-                                View your assignments and student progress.
-                            </p>
+                        <div className="mb-5 flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+                            <div>
+                                <h2 className="text-lg font-semibold text-gray-900">
+                                    My Assignments
+                                </h2>
+                                <p className="mt-1 text-sm text-gray-500">
+                                    View your assignments and student progress.
+                                </p>
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={() => setShowForm(true)}
+                                className="flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700"
+                            >
+                                <Plus size={18} />
+                                Create Assignment
+                            </button>
                         </div>
 
                         <div className="mb-5">
