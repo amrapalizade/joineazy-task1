@@ -25,6 +25,8 @@ function AdminDashboard() {
     const [showForm, setShowForm] = useState(false);
     const [editingAssignment, setEditingAssignment] = useState<Assignment | null>(null);
     const [search, setSearch] = useState("");
+    const [statusFilter, setStatusFilter] = useState("all");
+    const [sortOrder, setSortOrder] = useState("newest");
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [activePage, setActivePage] = useState("dashboard");
 
@@ -52,10 +54,35 @@ function AdminDashboard() {
         0
     );
 
-    const filteredAssignments = adminAssignments.filter(
-        (assignment) =>
+    const filteredAssignments = adminAssignments
+        .filter((assignment) =>
             assignment.title.toLowerCase().includes(search.toLowerCase())
-    );
+        )
+        .filter((assignment) => {
+            const submitted = assignment.submissions.filter(
+                (submission) => submission.status === "submitted"
+            ).length;
+
+            const total = assignment.assignedStudentIds.length;
+
+            if (statusFilter === "pending") {
+                return submitted < total;
+            }
+
+            if (statusFilter === "completed") {
+                return submitted === total;
+            }
+
+            return true;
+        })
+        .sort((a, b) => {
+            const dateA = new Date(a.dueDate).getTime();
+            const dateB = new Date(b.dueDate).getTime();
+
+            return sortOrder === "oldest"
+                ? dateA - dateB
+                : dateB - dateA;
+        });
 
     if (!currentUser) return null;
 
@@ -224,13 +251,36 @@ function AdminDashboard() {
                             </button>
                         </div>
 
-                        <div className="mb-5">
-                            <SearchBar
-                                value={search}
-                                onChange={setSearch}
-                                placeholder="Search assignments..."
-                            />
-                        </div>
+
+                                    <div className="mb-5 flex flex-col gap-3 sm:flex-row">
+                                        <div className="flex-1">
+                                            <SearchBar
+                                                value={search}
+                                                onChange={setSearch}
+                                                placeholder="Search assignments..."
+                                            />
+                                        </div>
+
+                                        <select
+                                            value={statusFilter}
+                                            onChange={(e) => setStatusFilter(e.target.value)}
+                                            className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm outline-none focus:border-indigo-500"
+                                        >
+                                            <option value="all">All Assignments</option>
+                                            <option value="pending">Pending</option>
+                                            <option value="completed">Completed</option>
+                                        </select>
+
+                                        <select
+                                            value={sortOrder}
+                                            onChange={(e) => setSortOrder(e.target.value)}
+                                            className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm outline-none focus:border-indigo-500"
+                                        >
+                                            <option value="newest">Newest Due Date</option>
+                                            <option value="oldest">Oldest Due Date</option>
+                                        </select>
+                                    </div>
+
 
                         <div className="space-y-4">
                             {filteredAssignments.length === 0 ? (
