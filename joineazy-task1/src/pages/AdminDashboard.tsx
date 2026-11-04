@@ -17,7 +17,7 @@ import { useAppContext } from "../context/AppContext";
 
 import AssignmentForm from "../components/AssignmentForm";
 import type { Assignment } from "../types";
-
+import StudentsPage from "./StudentsPage";
 
 
 function AdminDashboard() {
@@ -136,6 +136,10 @@ function AdminDashboard() {
                 />
 
                 <main className="space-y-6 p-4 sm:p-6 lg:p-8">
+                    {activePage === "students" ? (
+                        <StudentsPage />
+                    ) : (
+                        <>
                     <div>
                         <h1 className="text-2xl font-bold text-gray-900">
                             Welcome, {currentUser.name}!
@@ -358,7 +362,9 @@ function AdminDashboard() {
                                 })
                             )}
                         </div>
-                    </section>
+                                </section>
+                        </>
+                    )}
                 </main>
             </div>
         </div>
