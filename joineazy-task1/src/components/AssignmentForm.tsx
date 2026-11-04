@@ -1,7 +1,7 @@
 
 import { useState, type FormEvent } from "react";
-import type { User } from "../types";
 
+import type { User, Assignment } from "../types";
 interface AssignmentFormProps {
     students: User[];
     onSubmit: (data: {
@@ -10,21 +10,23 @@ interface AssignmentFormProps {
         dueDate: string;
         driveLink: string;
         assignedStudentIds: string[];
+        initialData?: Assignment | null;
     }) => void;
     onCancel: () => void;
 }
 
 function AssignmentForm({
     students,
+    initialData,
     onSubmit,
     onCancel,
 }: AssignmentFormProps) {
-    const [title, setTitle] = useState("");
-    const [description, setDescription] = useState("");
-    const [dueDate, setDueDate] = useState("");
-    const [driveLink, setDriveLink] = useState("");
+    const [title, setTitle] = useState(initialData?.title ?? "");
+    const [description, setDescription] = useState(initialData?.description ?? "");
+    const [dueDate, setDueDate] = useState(initialData?.dueDate ?? "");
+    const [driveLink, setDriveLink] = useState(initialData?.driveLink ?? "");
     const [selectedStudents, setSelectedStudents] = useState<string[]>(
-        () => students.map((student) => student.id)
+        () => initialData?.assignedStudentIds ?? students.map((student) => student.id)
     );
 
     const handleStudentChange = (studentId: string) => {
@@ -177,7 +179,7 @@ function AssignmentForm({
                     type="submit"
                     className="rounded-lg bg-indigo-600 px-5 py-3 text-sm font-semibold text-white hover:bg-indigo-700"
                 >
-                    Create Assignment
+                    {initialData ? "Update Assignment" : "Create Assignment"}
                 </button>
             </div>
         </form>

@@ -1,6 +1,12 @@
 
 import { useState } from "react";
-import { ClipboardList, Users, CheckCircle2, Clock, Plus, X } from "lucide-react";
+import {
+    ClipboardList,
+    Users,
+    CheckCircle2,
+    Clock,
+    Pencil,
+    Trash2, Plus, X } from "lucide-react";
 
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
@@ -15,8 +21,9 @@ import type { Assignment } from "../types";
 
 
 function AdminDashboard() {
-    const { currentUser, users, assignments, addAssignment } = useAppContext();
+    const { currentUser, users, assignments, addAssignment, deleteAssignment, updateAssignment, } = useAppContext();
     const [showForm, setShowForm] = useState(false);
+    const [editingAssignment, setEditingAssignment] = useState<Assignment | null>(null);
     const [search, setSearch] = useState("");
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [activePage, setActivePage] = useState("dashboard");
@@ -73,6 +80,46 @@ function AdminDashboard() {
         setShowForm(false);
     };
 
+
+    const handleDeleteAssignment = (assignmentId: string) => {
+        const confirmDelete = window.confirm(
+            "Are you sure you want to delete this assignment?"
+        );
+
+        if (confirmDelete) {
+            deleteAssignment(assignmentId);
+        }
+    };
+
+    const handleUpdateAssignment = (data: {
+        title: string;
+        description: string;
+        dueDate: string;
+        driveLink: string;
+        assignedStudentIds: string[];
+    }) => {
+        if (!editingAssignment) return;
+
+        const updatedAssignment: Assignment = {
+            ...editingAssignment,
+            ...data,
+            submissions: data.assignedStudentIds.map((studentId) => {
+                const existingSubmission = editingAssignment.submissions.find(
+                    (submission) => submission.studentId === studentId
+                );
+
+                return existingSubmission ?? {
+                    studentId,
+                    status: "pending" as const,
+                };
+            }),
+        };
+
+        updateAssignment(updatedAssignment);
+        setEditingAssignment(null);
+        setShowForm(false);
+    };
+
     return (
         <div className="flex min-h-screen bg-gray-50">
             <Sidebar
@@ -101,8 +148,16 @@ function AdminDashboard() {
                     {showForm && (
                         <AssignmentForm
                             students={users.filter((user) => user.role === "student")}
-                            onSubmit={handleCreateAssignment}
-                            onCancel={() => setShowForm(false)}
+                            initialData={editingAssignment}
+                            onSubmit={
+                                editingAssignment
+                                    ? handleUpdateAssignment
+                                    : handleCreateAssignment
+                            }
+                            onCancel={() => {
+                                setShowForm(false);
+                                setEditingAssignment(null);
+                            }}
                         />
                     )}
 
@@ -207,14 +262,38 @@ function AdminDashboard() {
                                                     </p>
                                                 </div>
 
-                                                <a
-                                                    href={assignment.driveLink}
-                                                    target="_blank"
-                                                    rel="noreferrer"
-                                                    className="text-sm font-medium text-indigo-600 hover:underline"
-                                                >
-                                                    Open Drive Link
-                                                </a>
+                                                <div className="flex items-center gap-3">
+                                                    <a
+                                                        href={assignment.driveLink}
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                        className="text-sm font-medium text-indigo-600 hover:underline"
+                                                    >
+                                                        Open Drive Link
+                                                    </a>
+
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            setEditingAssignment(assignment);
+                                                            setShowForm(true);
+                                                        }}
+                                                        className="rounded-lg p-2 text-indigo-600 hover:bg-indigo-50"
+                                                        title="Edit Assignment"
+                                                    >
+                                                        <Pencil size={18} />
+                                                    </button>
+
+
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleDeleteAssignment(assignment.id)}
+                                                        className="rounded-lg p-2 text-red-600 hover:bg-red-50"
+                                                        title="Delete Assignment"
+                                                    >
+                                                        <Trash2 size={18} />
+                                                    </button>
+                                                </div>
                                             </div>
 
                                             <div className="mt-5">
@@ -285,5 +364,6 @@ function AdminDashboard() {
         </div>
     );
 }
+
 
 export default AdminDashboard;
