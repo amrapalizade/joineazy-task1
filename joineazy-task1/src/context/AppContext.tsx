@@ -1,10 +1,5 @@
 
-import {
-    createContext,
-    useContext,
-    useState,
-    type ReactNode,
-} from "react";
+import { createContext, useContext, type ReactNode } from "react";
 
 import type { User, Assignment } from "../types";
 import { mockUsers, mockAssignments } from "../data/mockData";

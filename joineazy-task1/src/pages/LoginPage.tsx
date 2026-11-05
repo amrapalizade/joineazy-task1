@@ -1,4 +1,4 @@
-
+﻿
 import { useState } from "react";
 import { GraduationCap, ShieldCheck, ArrowRight } from "lucide-react";
 import { useAppContext } from "../context/AppContext";
@@ -79,7 +79,7 @@ function LoginPage() {
                 </button>
 
                 <p className="mt-5 text-center text-xs text-gray-400">
-                    Demo login � No password required
+                    Demo login · No password required
                 </p>
             </div>
         </div>

@@ -4,13 +4,13 @@ import { useState, type FormEvent } from "react";
 import type { User, Assignment } from "../types";
 interface AssignmentFormProps {
     students: User[];
+    initialData?: Assignment | null;
     onSubmit: (data: {
         title: string;
         description: string;
         dueDate: string;
         driveLink: string;
         assignedStudentIds: string[];
-        initialData?: Assignment | null;
     }) => void;
     onCancel: () => void;
 }

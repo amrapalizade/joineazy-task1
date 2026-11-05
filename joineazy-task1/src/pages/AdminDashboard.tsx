@@ -6,7 +6,7 @@ import {
     CheckCircle2,
     Clock,
     Pencil,
-    Trash2, Plus, X } from "lucide-react";
+    Trash2, Plus } from "lucide-react";
 
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
